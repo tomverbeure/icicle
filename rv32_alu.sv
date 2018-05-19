@@ -32,30 +32,30 @@ module rv32_alu (
     input [31:0] imm_value_in,
 
     /* control out */
-    output logic non_zero_out,
+    output reg non_zero_out,
 
     /* data out */
-    output logic [31:0] result_out
+    output reg [31:0] result_out
 );
-    logic [31:0] src1;
-    logic [31:0] src2;
+    reg [31:0] src1;
+    reg [31:0] src2;
 
-    logic src1_sign;
-    logic src2_sign;
+    reg src1_sign;
+    reg src2_sign;
 
-    logic [4:0] shamt;
+    reg [4:0] shamt;
 
-    logic [32:0] add_sub;
-    logic [31:0] srl_sra;
+    reg [32:0] add_sub;
+    reg [31:0] srl_sra;
 
-    logic carry;
-    logic sign;
-    logic ovf;
+    reg carry;
+    reg sign;
+    reg ovf;
 
-    logic lt;
-    logic ltu;
+    reg lt;
+    reg ltu;
 
-    always_comb begin
+    always @(*) begin
         case (src1_in)
             `RV32_ALU_SRC1_REG:  src1 = rs1_value_in;
             `RV32_ALU_SRC1_PC:   src1 = pc_in;
@@ -86,7 +86,7 @@ module rv32_alu (
     assign lt  = sign != ovf;
     assign ltu = carry;
 
-    always_comb begin
+    always @(*) begin
         case (op_in)
             `RV32_ALU_OP_ADD_SUB: result_out = add_sub[31:0];
             `RV32_ALU_OP_XOR:     result_out = src1 ^ src2;

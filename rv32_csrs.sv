@@ -161,34 +161,34 @@ module rv32_csrs (
     input [31:0] imm_value_in,
 
     /* data out */
-    output logic [31:0] read_value_out,
-    output logic [63:0] cycle_out
+    output reg [31:0] read_value_out,
+    output reg [63:0] cycle_out
 );
-    logic [31:0] write_value;
-    logic [31:0] new_value;
+    reg [31:0] write_value;
+    reg [31:0] new_value;
 
-    logic mstatus_mpie;
-    logic mstatus_mie;
-    logic mie_meie;
-    logic mie_mtie;
-    logic mie_msie;
-    logic [31:2] mtvec_base;
-    logic mtvec_mode;
-    logic [31:0] mscratch;
-    logic [31:2] mepc;
-    logic mcause_interrupt;
-    logic [3:0] mcause_code;
-    logic [31:0] mtval;
-    logic mip_meip;
-    logic mip_mtip;
-    logic mip_msip;
-    logic [63:0] cycle;
-    logic [63:0] instret;
+    reg mstatus_mpie;
+    reg mstatus_mie;
+    reg mie_meie;
+    reg mie_mtie;
+    reg mie_msie;
+    reg [31:2] mtvec_base;
+    reg mtvec_mode;
+    reg [31:0] mscratch;
+    reg [31:2] mepc;
+    reg mcause_interrupt;
+    reg [3:0] mcause_code;
+    reg [31:0] mtval;
+    reg mip_meip;
+    reg mip_mtip;
+    reg mip_msip;
+    reg [63:0] cycle;
+    reg [63:0] instret;
 
     assign write_value = src_in ? rs1_value_in : imm_value_in;
     assign cycle_out = cycle;
 
-    always_comb begin
+    always @(*) begin
         case (csr_in)
             `RV32_CSR_MSTATUS:        read_value_out = {19'b0, 2'b11, 3'b0, mstatus_mpie, 3'b0, mstatus_mie, 3'b0};
             `RV32_CSR_MISA:           read_value_out = `RV32_MISA_VALUE;
@@ -331,7 +331,7 @@ module rv32_csrs (
         endcase
     end
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (!stall_in && write_in) begin
             case (csr_in)
                 `RV32_CSR_MSTATUS:  {mstatus_mpie, mstatus_mie} <= {new_value[7], new_value[3]};

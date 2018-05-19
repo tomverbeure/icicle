@@ -26,45 +26,45 @@ module rv32_decode (
     input [31:0] rd_value_in,
 
     /* control out (to hazard) */
-    output logic [4:0] rs1_unreg_out,
-    output logic rs1_read_unreg_out,
-    output logic [4:0] rs2_unreg_out,
-    output logic rs2_read_unreg_out,
-    output logic mem_fence_unreg_out,
+    output reg [4:0] rs1_unreg_out,
+    output reg rs1_read_unreg_out,
+    output reg [4:0] rs2_unreg_out,
+    output reg rs2_read_unreg_out,
+    output reg mem_fence_unreg_out,
 
     /* control out */
-    output logic branch_predicted_taken_out,
-    output logic valid_out,
-    output logic [4:0] rs1_out,
-    output logic [4:0] rs2_out,
-    output logic [2:0] alu_op_out,
-    output logic alu_sub_sra_out,
-    output logic [1:0] alu_src1_out,
-    output logic [1:0] alu_src2_out,
-    output logic mem_read_out,
-    output logic mem_write_out,
-    output logic [1:0] mem_width_out,
-    output logic mem_zero_extend_out,
-    output logic mem_fence_out,
-    output logic csr_read_out,
-    output logic csr_write_out,
-    output logic [1:0] csr_write_op_out,
-    output logic csr_src_out,
-    output logic [1:0] branch_op_out,
-    output logic branch_pc_src_out,
-    output logic [4:0] rd_out,
-    output logic rd_write_out,
+    output reg branch_predicted_taken_out,
+    output reg valid_out,
+    output reg [4:0] rs1_out,
+    output reg [4:0] rs2_out,
+    output reg [2:0] alu_op_out,
+    output reg alu_sub_sra_out,
+    output reg [1:0] alu_src1_out,
+    output reg [1:0] alu_src2_out,
+    output reg mem_read_out,
+    output reg mem_write_out,
+    output reg [1:0] mem_width_out,
+    output reg mem_zero_extend_out,
+    output reg mem_fence_out,
+    output reg csr_read_out,
+    output reg csr_write_out,
+    output reg [1:0] csr_write_op_out,
+    output reg csr_src_out,
+    output reg [1:0] branch_op_out,
+    output reg branch_pc_src_out,
+    output reg [4:0] rd_out,
+    output reg rd_write_out,
 
     /* data out */
-    output logic [31:0] pc_out,
-    output logic [31:0] rs1_value_out,
-    output logic [31:0] rs2_value_out,
-    output logic [31:0] imm_value_out,
-    output logic [11:0] csr_out
+    output reg [31:0] pc_out,
+    output reg [31:0] rs1_value_out,
+    output reg [31:0] rs2_value_out,
+    output reg [31:0] imm_value_out,
+    output reg [11:0] csr_out
 );
-    logic [4:0] rs2;
-    logic [4:0] rs1;
-    logic [4:0] rd;
+    reg [4:0] rs2;
+    reg [4:0] rs1;
+    reg [4:0] rd;
 
     assign rs2 = instr_in[24:20];
     assign rs1 = instr_in[19:15];
@@ -91,26 +91,26 @@ module rv32_decode (
         .rs2_value_out(rs2_value_out)
     );
 
-    logic valid;
-    logic rs1_read;
-    logic rs2_read;
-    logic [2:0] imm;
-    logic [2:0] alu_op;
-    logic alu_sub_sra;
-    logic [1:0] alu_src1;
-    logic [1:0] alu_src2;
-    logic mem_read;
-    logic mem_write;
-    logic [1:0] mem_width;
-    logic mem_zero_extend;
-    logic mem_fence;
-    logic csr_read;
-    logic csr_write;
-    logic [1:0] csr_write_op;
-    logic csr_src;
-    logic [1:0] branch_op;
-    logic branch_pc_src;
-    logic rd_write;
+    reg valid;
+    reg rs1_read;
+    reg rs2_read;
+    reg [2:0] imm;
+    reg [2:0] alu_op;
+    reg alu_sub_sra;
+    reg [1:0] alu_src1;
+    reg [1:0] alu_src2;
+    reg mem_read;
+    reg mem_write;
+    reg [1:0] mem_width;
+    reg mem_zero_extend;
+    reg mem_fence;
+    reg csr_read;
+    reg csr_write;
+    reg [1:0] csr_write_op;
+    reg csr_src;
+    reg [1:0] branch_op;
+    reg branch_pc_src;
+    reg rd_write;
 
     assign rs1_read_unreg_out = rs1_read;
     assign rs2_read_unreg_out = rs2_read;
@@ -147,7 +147,7 @@ module rv32_decode (
         .rd_write_out(rd_write)
     );
 
-    logic [31:0] imm_value;
+    reg [31:0] imm_value;
 
     rv32_imm_mux imm_mux (
         /* control in */
@@ -160,11 +160,11 @@ module rv32_decode (
         .imm_value_out(imm_value)
     );
 
-    logic [11:0] csr;
+    reg [11:0] csr;
 
     assign csr = instr_in[31:20];
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (!stall_in) begin
             branch_predicted_taken_out <= branch_predicted_taken_in;
             valid_out <= valid;

@@ -11,30 +11,30 @@ module uart (
 
     /* serial port */
     input rx_in,
-    output logic tx_out,
+    output reg tx_out,
 
     /* memory bus */
     input [31:0] address_in,
     input sel_in,
     input read_in,
-    output logic [31:0] read_value_out,
+    output reg [31:0] read_value_out,
     input [3:0] write_mask_in,
     input [31:0] write_value_in
 );
-    logic [15:0] clk_div;
+    reg [15:0] clk_div;
 
-    logic [15:0] rx_clks;
-    logic [3:0] rx_bits;
-    logic [7:0] rx_buf;
+    reg [15:0] rx_clks;
+    reg [3:0] rx_bits;
+    reg [7:0] rx_buf;
 
-    logic [7:0] rx_read_buf;
-    logic rx_read_ready;
+    reg [7:0] rx_read_buf;
+    reg rx_read_ready;
 
-    logic [15:0] tx_clks;
-    logic [3:0] tx_bits;
-    logic [9:0] tx_buf;
+    reg [15:0] tx_clks;
+    reg [3:0] tx_bits;
+    reg [9:0] tx_buf;
 
-    logic tx_write_ready;
+    reg tx_write_ready;
 
     initial
         tx_buf[0] = 1;
@@ -42,7 +42,7 @@ module uart (
     assign tx_out = tx_buf[0];
     assign tx_write_ready = ~|tx_bits;
 
-    always_comb begin
+    always @(*) begin
         if (sel_in) begin
             case (address_in[3:2])
                 `UART_REG_CLK_DIV: begin
@@ -63,7 +63,7 @@ module uart (
         end
     end
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (sel_in) begin
             case (address_in[3:2])
                 `UART_REG_CLK_DIV: begin

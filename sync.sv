@@ -6,11 +6,11 @@ module sync #(
 ) (
     input clk,
     input [BITS-1:0] in,
-    output logic [BITS-1:0] out
+    output reg [BITS-1:0] out
 );
-    logic [BITS-1:0] metastable;
+    reg [BITS-1:0] metastable;
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         metastable <= in;
         out <= metastable;
     end

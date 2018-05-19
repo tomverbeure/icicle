@@ -5,27 +5,28 @@ module bus_arbiter (
     /* instruction memory bus */
     input [31:0] instr_address_in,
     input instr_read_in,
-    output logic [31:0] instr_read_value_out,
-    output logic instr_ready,
+    output reg [31:0] instr_read_value_out,
+    output reg instr_ready,
 
     /* data memory bus */
     input [31:0] data_address_in,
     input data_read_in,
     input data_write_in,
-    output logic [31:0] data_read_value_out,
+    output reg [31:0] data_read_value_out,
     input [3:0] data_write_mask_in,
     input [31:0] data_write_value_in,
-    output logic data_ready,
+    output reg data_ready,
 
     /* common memory bus */
-    output logic [31:0] address_out,
-    output logic read_out,
-    output logic write_out,
+    output reg [31:0] address_out,
+    output reg read_out,
+    output reg write_out,
     input [31:0] read_value_in,
-    output logic [3:0] write_mask_out,
-    output logic [31:0] write_value_out
+    output reg [3:0] write_mask_out,
+    output reg [31:0] write_value_out
 );
-    always_comb begin
+
+    always @(*) begin
         if (data_read_in || data_write_in) begin
             address_out = data_address_in;
             read_out = data_read_in;

@@ -19,9 +19,9 @@ module rv32_branch_pc_mux (
     input [31:0] imm_value_in,
 
     /* data out */
-    output logic [31:0] pc_out
+    output reg [31:0] pc_out
 );
-    logic [31:0] pc;
+    reg [31:0] pc;
 
     assign pc = (pc_src_in ? rs1_value_in : pc_in) + imm_value_in;
     assign pc_out = {pc[31:1], 1'b0};
@@ -34,11 +34,11 @@ module rv32_branch_unit (
     input [1:0] op_in,
 
     /* control out */
-    output logic mispredicted_out
+    output reg mispredicted_out
 );
-    logic taken;
+    reg taken;
 
-    always_comb begin
+    always @(*) begin
         case (op_in)
             `RV32_BRANCH_OP_NEVER:    taken = 0;
             `RV32_BRANCH_OP_ZERO:     taken = ~alu_non_zero_in;

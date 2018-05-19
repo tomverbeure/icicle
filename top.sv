@@ -14,32 +14,32 @@ module top (
 
 `ifdef FLASH
     /* serial flash */
-    output logic flash_clk,
-    output logic flash_csn,
+    output reg flash_clk,
+    output reg flash_csn,
     inout flash_io0,
     inout flash_io1,
 `endif
 
     /* LEDs */
-    output logic [7:0] leds,
+    output reg [7:0] leds,
 
     /* UART */
     input uart_rx,
-    output logic uart_tx
+    output reg uart_tx
 );
 
 `ifdef FLASH
-    logic flash_io0_en;
-    logic flash_io0_in;
-    logic flash_io0_out;
+    reg flash_io0_en;
+    reg flash_io0_in;
+    reg flash_io0_out;
 
-    logic flash_io1_en;
-    logic flash_io1_in;
-    logic flash_io1_out;
+    reg flash_io1_en;
+    reg flash_io1_in;
+    reg flash_io1_out;
 `endif
 
 `ifdef INTERNAL_OSC
-    logic clk;
+    reg clk;
     SB_HFOSC inthosc (
         .CLKHFPU(1'b1),
         .CLKHFEN(1'b1),
@@ -58,8 +58,8 @@ module top (
     );
 `endif
 
-    logic pll_clk;
-    logic pll_locked_async;
+    reg pll_clk;
+    reg pll_locked_async;
 
     pll pll (
         .clock_in(clk),
@@ -67,8 +67,8 @@ module top (
         .locked(pll_locked_async)
     );
 
-    logic pll_locked;
-    logic reset;
+    reg pll_locked;
+    reg reset;
 
     assign reset = ~pll_locked;
 
@@ -79,27 +79,27 @@ module top (
     );
 
     /* instruction memory bus */
-    logic [31:0] instr_address;
-    logic instr_read;
-    logic [31:0] instr_read_value;
-    logic instr_ready;
+    reg [31:0] instr_address;
+    reg instr_read;
+    reg [31:0] instr_read_value;
+    reg instr_ready;
 
     /* data memory bus */
-    logic [31:0] data_address;
-    logic data_read;
-    logic data_write;
-    logic [31:0] data_read_value;
-    logic [3:0] data_write_mask;
-    logic [31:0] data_write_value;
-    logic data_ready;
+    reg [31:0] data_address;
+    reg data_read;
+    reg data_write;
+    reg [31:0] data_read_value;
+    reg [3:0] data_write_mask;
+    reg [31:0] data_write_value;
+    reg data_ready;
 
     /* memory bus */
-    logic [31:0] mem_address;
-    logic mem_read;
-    logic mem_write;
-    logic [31:0] mem_read_value;
-    logic [3:0] mem_write_mask;
-    logic [31:0] mem_write_value;
+    reg [31:0] mem_address;
+    reg mem_read;
+    reg mem_write;
+    reg [31:0] mem_read_value;
+    reg [3:0] mem_write_mask;
+    reg [31:0] mem_write_value;
 
     assign mem_read_value = ram_read_value | leds_read_value | uart_read_value | timer_read_value;
 
@@ -128,7 +128,7 @@ module top (
         .write_value_out(mem_write_value)
     );
 
-    logic [63:0] cycle;
+    reg [63:0] cycle;
 
     rv32 rv32 (
         .clk(pll_clk),
@@ -152,12 +152,12 @@ module top (
         .cycle_out(cycle)
     );
 
-    logic ram_sel;
-    logic leds_sel;
-    logic uart_sel;
-    logic timer_sel;
+    reg ram_sel;
+    reg leds_sel;
+    reg uart_sel;
+    reg timer_sel;
 
-    always_comb begin
+    always @(*) begin
         ram_sel = 0;
         leds_sel = 0;
         uart_sel = 0;
@@ -171,7 +171,7 @@ module top (
         endcase
     end
 
-    logic [31:0] ram_read_value;
+    reg [31:0] ram_read_value;
 
     ram ram (
         .clk(pll_clk),
@@ -184,16 +184,16 @@ module top (
         .write_value_in(mem_write_value)
     );
 
-    logic [31:0] leds_read_value;
+    reg [31:0] leds_read_value;
 
     assign leds_read_value = {24'b0, leds_sel ? leds : 8'b0};
 
-    always_ff @(posedge pll_clk) begin
+    always @(posedge pll_clk) begin
         if (leds_sel && mem_write_mask[0])
             leds <= mem_write_value[7:0];
     end
 
-    logic [31:0] uart_read_value;
+    reg [31:0] uart_read_value;
 
     uart uart (
         .clk(pll_clk),
@@ -212,7 +212,7 @@ module top (
         .write_value_in(mem_write_value)
     );
 
-    logic [31:0] timer_read_value;
+    reg [31:0] timer_read_value;
 
     timer timer (
         .clk(pll_clk),

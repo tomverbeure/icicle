@@ -17,28 +17,28 @@ module rv32_control_unit (
     input [4:0] rd_in,
 
     /* control out */
-    output logic valid_out,
-    output logic rs1_read_out,
-    output logic rs2_read_out,
-    output logic [2:0] imm_out,
-    output logic [2:0] alu_op_out,
-    output logic alu_sub_sra_out,
-    output logic [1:0] alu_src1_out,
-    output logic [1:0] alu_src2_out,
-    output logic mem_read_out,
-    output logic mem_write_out,
-    output logic [1:0] mem_width_out,
-    output logic mem_zero_extend_out,
-    output logic mem_fence_out,
-    output logic csr_read_out,
-    output logic csr_write_out,
-    output logic [1:0] csr_write_op_out,
-    output logic csr_src_out,
-    output logic [1:0] branch_op_out,
-    output logic branch_pc_src_out,
-    output logic rd_write_out
+    output reg valid_out,
+    output reg rs1_read_out,
+    output reg rs2_read_out,
+    output reg [2:0] imm_out,
+    output reg [2:0] alu_op_out,
+    output reg alu_sub_sra_out,
+    output reg [1:0] alu_src1_out,
+    output reg [1:0] alu_src2_out,
+    output reg mem_read_out,
+    output reg mem_write_out,
+    output reg [1:0] mem_width_out,
+    output reg mem_zero_extend_out,
+    output reg mem_fence_out,
+    output reg csr_read_out,
+    output reg csr_write_out,
+    output reg [1:0] csr_write_op_out,
+    output reg csr_src_out,
+    output reg [1:0] branch_op_out,
+    output reg branch_pc_src_out,
+    output reg rd_write_out
 );
-    always_comb begin
+    always @(*) begin
         valid_out = 0;
         rs1_read_out = 0;
         rs2_read_out = 0;

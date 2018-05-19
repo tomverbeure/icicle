@@ -5,11 +5,11 @@ module clk_div #(
     parameter LOG_DIVISOR = 1
 ) (
     input clk_in,
-    output logic clk_out
+    output reg clk_out
 );
-    logic [LOG_DIVISOR-1:0] q;
+    reg [LOG_DIVISOR-1:0] q;
 
-    always_ff @(posedge clk_in)
+    always @(posedge clk_in)
         q <= q + 1;
 
     assign clk_out = q[LOG_DIVISOR-1];

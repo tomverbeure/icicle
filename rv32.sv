@@ -11,114 +11,114 @@ module rv32 (
     input clk,
 
     /* instruction memory bus */
-    output logic [31:0] instr_address_out,
-    output logic instr_read_out,
+    output reg [31:0] instr_address_out,
+    output reg instr_read_out,
     input [31:0] instr_read_value_in,
     input instr_ready_in,
 
     /* data memory bus */
-    output logic [31:0] data_address_out,
-    output logic data_read_out,
-    output logic data_write_out,
+    output reg [31:0] data_address_out,
+    output reg data_read_out,
+    output reg data_write_out,
     input [31:0] data_read_value_in,
-    output logic [3:0] data_write_mask_out,
-    output logic [31:0] data_write_value_out,
+    output reg [3:0] data_write_mask_out,
+    output reg [31:0] data_write_value_out,
     input data_ready_in,
 
     /* timer */
-    output logic [63:0] cycle_out
+    output reg [63:0] cycle_out
 );
     /* hazard -> fetch control */
-    logic fetch_stall;
-    logic fetch_flush;
+    reg fetch_stall;
+    reg fetch_flush;
 
     /* hazard -> decode control */
-    logic decode_stall;
-    logic decode_flush;
+    reg decode_stall;
+    reg decode_flush;
 
     /* hazard -> execute control */
-    logic execute_stall;
-    logic execute_flush;
+    reg execute_stall;
+    reg execute_flush;
 
     /* hazard -> mem control */
-    logic mem_stall;
-    logic mem_flush;
+    reg mem_stall;
+    reg mem_flush;
 
     /* fetch -> decode control */
-    logic fetch_branch_predicted_taken;
+    reg fetch_branch_predicted_taken;
 
     /* fetch -> decode data */
-    logic [31:0] fetch_pc;
-    logic [31:0] fetch_instr;
+    reg [31:0] fetch_pc;
+    reg [31:0] fetch_instr;
 
     /* decode -> hazard control */
-    logic [4:0] decode_rs1_unreg;
-    logic decode_rs1_read_unreg;
-    logic [4:0] decode_rs2_unreg;
-    logic decode_rs2_read_unreg;
-    logic decode_mem_fence_unreg;
+    reg [4:0] decode_rs1_unreg;
+    reg decode_rs1_read_unreg;
+    reg [4:0] decode_rs2_unreg;
+    reg decode_rs2_read_unreg;
+    reg decode_mem_fence_unreg;
 
     /* decode -> execute control */
-    logic decode_branch_predicted_taken;
-    logic decode_valid;
-    logic [4:0] decode_rs1;
-    logic [4:0] decode_rs2;
-    logic [2:0] decode_alu_op;
-    logic decode_alu_sub_sra;
-    logic [1:0] decode_alu_src1;
-    logic [1:0] decode_alu_src2;
-    logic decode_mem_read;
-    logic decode_mem_write;
-    logic [1:0] decode_mem_width;
-    logic decode_mem_zero_extend;
-    logic decode_mem_fence;
-    logic decode_csr_read;
-    logic decode_csr_write;
-    logic [1:0] decode_csr_write_op;
-    logic decode_csr_src;
-    logic [1:0] decode_branch_op;
-    logic decode_branch_pc_src;
-    logic [4:0] decode_rd;
-    logic decode_rd_write;
+    reg decode_branch_predicted_taken;
+    reg decode_valid;
+    reg [4:0] decode_rs1;
+    reg [4:0] decode_rs2;
+    reg [2:0] decode_alu_op;
+    reg decode_alu_sub_sra;
+    reg [1:0] decode_alu_src1;
+    reg [1:0] decode_alu_src2;
+    reg decode_mem_read;
+    reg decode_mem_write;
+    reg [1:0] decode_mem_width;
+    reg decode_mem_zero_extend;
+    reg decode_mem_fence;
+    reg decode_csr_read;
+    reg decode_csr_write;
+    reg [1:0] decode_csr_write_op;
+    reg decode_csr_src;
+    reg [1:0] decode_branch_op;
+    reg decode_branch_pc_src;
+    reg [4:0] decode_rd;
+    reg decode_rd_write;
 
     /* decode -> execute data */
-    logic [31:0] decode_pc;
-    logic [31:0] decode_rs1_value;
-    logic [31:0] decode_rs2_value;
-    logic [31:0] decode_imm_value;
-    logic [11:0] decode_csr;
+    reg [31:0] decode_pc;
+    reg [31:0] decode_rs1_value;
+    reg [31:0] decode_rs2_value;
+    reg [31:0] decode_imm_value;
+    reg [11:0] decode_csr;
 
     /* execute -> mem control */
-    logic execute_branch_predicted_taken;
-    logic execute_valid;
-    logic execute_alu_non_zero;
-    logic execute_mem_read;
-    logic execute_mem_write;
-    logic [1:0] execute_mem_width;
-    logic execute_mem_zero_extend;
-    logic execute_mem_fence;
-    logic [1:0] execute_branch_op;
-    logic [4:0] execute_rd;
-    logic execute_rd_write;
+    reg execute_branch_predicted_taken;
+    reg execute_valid;
+    reg execute_alu_non_zero;
+    reg execute_mem_read;
+    reg execute_mem_write;
+    reg [1:0] execute_mem_width;
+    reg execute_mem_zero_extend;
+    reg execute_mem_fence;
+    reg [1:0] execute_branch_op;
+    reg [4:0] execute_rd;
+    reg execute_rd_write;
 
     /* execute -> mem data */
-    logic [31:0] execute_result;
-    logic [31:0] execute_rs2_value;
-    logic [31:0] execute_branch_pc;
+    reg [31:0] execute_result;
+    reg [31:0] execute_rs2_value;
+    reg [31:0] execute_branch_pc;
 
     /* mem -> writeback control */
-    logic mem_valid;
-    logic [4:0] mem_rd;
-    logic mem_rd_write;
+    reg mem_valid;
+    reg [4:0] mem_rd;
+    reg mem_rd_write;
 
     /* mem -> fetch control */
-    logic mem_branch_mispredicted;
+    reg mem_branch_mispredicted;
 
     /* mem -> writeback data */
-    logic [31:0] mem_rd_value;
+    reg [31:0] mem_rd_value;
 
     /* mem -> fetch data */
-    logic [31:0] mem_branch_pc;
+    reg [31:0] mem_branch_pc;
 
     rv32_hazard_unit hazard_unit (
         /* control in */

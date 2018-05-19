@@ -17,18 +17,18 @@ module rv32_imm_mux (
     input [31:0] instr_in,
 
     /* data out */
-    output logic [31:0] imm_value_out
+    output reg [31:0] imm_value_out
 );
-    logic sign;
+    reg sign;
 
-    logic [31:0] imm_i;
-    logic [31:0] imm_s;
-    logic [31:0] imm_b;
-    logic [31:0] imm_u;
-    logic [31:0] imm_j;
+    reg [31:0] imm_i;
+    reg [31:0] imm_s;
+    reg [31:0] imm_b;
+    reg [31:0] imm_u;
+    reg [31:0] imm_j;
 
-    logic [31:0] shamt;
-    logic [31:0] zimm;
+    reg [31:0] shamt;
+    reg [31:0] zimm;
 
     assign sign = instr_in[31];
 
@@ -41,7 +41,7 @@ module rv32_imm_mux (
     assign shamt = {27'bx, instr_in[24:20]};
     assign zimm  = {27'b0, instr_in[19:15]};
 
-    always_comb begin
+    always @(*) begin
         case (imm_in)
             `RV32_IMM_I:     imm_value_out = imm_i;
             `RV32_IMM_S:     imm_value_out = imm_s;

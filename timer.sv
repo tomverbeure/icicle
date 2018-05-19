@@ -16,13 +16,13 @@ module timer (
     input [31:0] address_in,
     input sel_in,
     input read_in,
-    output logic [31:0] read_value_out,
+    output reg [31:0] read_value_out,
     input [3:0] write_mask_in,
     input [31:0] write_value_in
 );
-    logic [63:0] mtimecmp;
+    reg [63:0] mtimecmp;
 
-    always_comb begin
+    always @(*) begin
         if (sel_in) begin
             case (address_in[3:2])
                 `TIMER_MTIMEL:    read_value_out = cycle_in[31:0];
@@ -35,7 +35,7 @@ module timer (
         end
     end
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (sel_in) begin
             case (address_in[3:2])
                 `TIMER_MTIMECMPL: begin

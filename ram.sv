@@ -7,19 +7,19 @@ module ram (
     /* memory bus */
     input [31:0] address_in,
     input sel_in,
-    output logic [31:0] read_value_out,
+    output reg [31:0] read_value_out,
     input [3:0] write_mask_in,
     input [31:0] write_value_in
 );
-    logic [31:0] mem [2047:0];
-    logic [31:0] read_value;
+    reg [31:0] mem [2047:0];
+    reg [31:0] read_value;
 
     initial
         $readmemh("progmem_syn.hex", mem);
 
     assign read_value_out = sel_in ? read_value : 0;
 
-    always_ff @(negedge clk) begin
+    always @(negedge clk) begin
         read_value <= {mem[address_in[31:2]][7:0], mem[address_in[31:2]][15:8], mem[address_in[31:2]][23:16], mem[address_in[31:2]][31:24]};
 
         if (sel_in) begin

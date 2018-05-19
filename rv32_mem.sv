@@ -35,23 +35,23 @@ module rv32_mem (
     input [31:0] data_read_value_in,
 
     /* control out */
-    output logic valid_out,
-    output logic branch_mispredicted_out,
-    output logic [4:0] rd_out,
-    output logic rd_write_out,
+    output reg valid_out,
+    output reg branch_mispredicted_out,
+    output reg [4:0] rd_out,
+    output reg rd_write_out,
 
     /* control out (to data memory bus) */
-    output logic data_read_out,
-    output logic data_write_out,
-    output logic [3:0] data_write_mask_out,
+    output reg data_read_out,
+    output reg data_write_out,
+    output reg [3:0] data_write_mask_out,
 
     /* data out */
-    output logic [31:0] rd_value_out,
-    output logic [31:0] branch_pc_out,
+    output reg [31:0] rd_value_out,
+    output reg [31:0] branch_pc_out,
 
     /* data out (to data memory bus) */
-    output logic [31:0] data_address_out,
-    output logic [31:0] data_write_value_out
+    output reg [31:0] data_address_out,
+    output reg [31:0] data_write_value_out
 );
     /* branch unit */
     rv32_branch_unit branch_unit (
@@ -67,13 +67,13 @@ module rv32_mem (
     assign branch_pc_out = branch_pc_in;
 
     /* memory access unit */
-    logic [31:0] mem_read_value;
+    reg [31:0] mem_read_value;
 
     assign data_read_out = read_in;
     assign data_write_out = write_in;
     assign data_address_out = result_in;
 
-    always_comb begin
+    always @(*) begin
         /* write port */
         if (write_in) begin
             case (width_in)
@@ -152,7 +152,7 @@ module rv32_mem (
         end
     end
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (!stall_in) begin
             valid_out <= valid_in;
             rd_out <= rd_in;

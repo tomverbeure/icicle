@@ -26,24 +26,24 @@ module rv32_hazard_unit (
     input data_ready_in,
 
     /* control out */
-    output logic fetch_stall_out,
-    output logic fetch_flush_out,
+    output reg fetch_stall_out,
+    output reg fetch_flush_out,
 
-    output logic decode_stall_out,
-    output logic decode_flush_out,
+    output reg decode_stall_out,
+    output reg decode_flush_out,
 
-    output logic execute_stall_out,
-    output logic execute_flush_out,
+    output reg execute_stall_out,
+    output reg execute_flush_out,
 
-    output logic mem_stall_out,
-    output logic mem_flush_out
+    output reg mem_stall_out,
+    output reg mem_flush_out
 );
-    logic rs1_matches;
-    logic rs2_matches;
-    logic fetch_wait_for_bus;
-    logic fetch_wait_for_mem_read;
-    logic fetch_wait_for_mem_fence;
-    logic mem_wait_for_bus;
+    reg rs1_matches;
+    reg rs2_matches;
+    reg fetch_wait_for_bus;
+    reg fetch_wait_for_mem_read;
+    reg fetch_wait_for_mem_fence;
+    reg mem_wait_for_bus;
 
     assign rs1_matches = decode_rs1_unreg_in == decode_rd_in && decode_rs1_read_unreg_in;
     assign rs2_matches = decode_rs2_unreg_in == decode_rd_in && decode_rs2_read_unreg_in;

@@ -51,31 +51,31 @@ module rv32_execute (
     input [31:0] writeback_rd_value_in,
 
     /* control out */
-    output logic branch_predicted_taken_out,
-    output logic valid_out,
-    output logic alu_non_zero_out,
-    output logic mem_read_out,
-    output logic mem_write_out,
-    output logic [1:0] mem_width_out,
-    output logic mem_zero_extend_out,
-    output logic mem_fence_out,
-    output logic [1:0] branch_op_out,
-    output logic [4:0] rd_out,
-    output logic rd_write_out,
+    output reg branch_predicted_taken_out,
+    output reg valid_out,
+    output reg alu_non_zero_out,
+    output reg mem_read_out,
+    output reg mem_write_out,
+    output reg [1:0] mem_width_out,
+    output reg mem_zero_extend_out,
+    output reg mem_fence_out,
+    output reg [1:0] branch_op_out,
+    output reg [4:0] rd_out,
+    output reg rd_write_out,
 
     /* data out */
-    output logic [31:0] result_out,
-    output logic [31:0] rs2_value_out,
-    output logic [31:0] branch_pc_out,
+    output reg [31:0] result_out,
+    output reg [31:0] rs2_value_out,
+    output reg [31:0] branch_pc_out,
 
     /* data out (to timer) */
-    output logic [63:0] cycle_out
+    output reg [63:0] cycle_out
 );
     /* bypassing */
-    logic [31:0] rs1_value;
-    logic [31:0] rs2_value;
+    reg [31:0] rs1_value;
+    reg [31:0] rs2_value;
 
-    always_comb begin
+    always @(*) begin
         if (rd_write_out && rd_out == rs1_in && |rs1_in)
             rs1_value = result_out;
         else if (writeback_rd_write_in && writeback_rd_in == rs1_in && |rs1_in)
@@ -92,8 +92,8 @@ module rv32_execute (
     end
 
     /* ALU */
-    logic alu_non_zero;
-    logic [31:0] alu_result;
+    reg alu_non_zero;
+    reg [31:0] alu_result;
 
     rv32_alu alu (
         /* control in */
@@ -116,8 +116,8 @@ module rv32_execute (
     );
 
     /* csr file */
-    logic [31:0] csr_read_value;
-    logic [63:0] cycle;
+    reg [31:0] csr_read_value;
+    reg [63:0] cycle;
 
     rv32_csrs csrs (
         .clk(clk),
@@ -145,7 +145,7 @@ module rv32_execute (
     );
 
     /* branch target calculation */
-    logic [31:0] branch_pc;
+    reg [31:0] branch_pc;
 
     rv32_branch_pc_mux branch_pc_mux (
         /* control in */
@@ -160,7 +160,7 @@ module rv32_execute (
         .pc_out(branch_pc)
     );
 
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (!stall_in) begin
             branch_predicted_taken_out <= branch_predicted_taken_in;
             valid_out <= valid_in;
